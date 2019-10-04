@@ -1,0 +1,40 @@
+
+FUNCTION_BLOCK ControlVentilador
+
+VAR_INPUT
+    temperatura : REAL;
+END_VAR
+
+VAR_OUTPUT
+    velocidad : REAL;
+END_VAR
+
+FUZZIFY temperatura
+    TERM frio := (0,0)(10,1)(20,0);
+    TERM tibio := (17,0)(22,1)(29,1)(34,0);
+    TERM caliente := (30,0)(35,1)(40,0);
+END_FUZZIFY
+
+DEFUZZIFY velocidad
+    TERM lento := (0,0)(30,1)(60,0);
+    TERM medio := (50,0)(70,1)(90,0);
+    TERM alto := (80,0)(100,1)(107,0);
+    
+    METHOD : COG;
+    DEFAULT:=0;
+END_DEFUZZIFY
+
+RULEBLOCK Reglas1
+    ACT : MIN;
+    AND : MIN;
+    ACCU : MAX;
+
+    RULE R1: IF temperatura IS frio THEN velocidad IS lento;
+    RULE R2: IF temperatura IS tibio THEN velocidad IS medio;
+    RULE R3: IF temperatura IS caliente THEN
+    velocidad IS alto;
+    
+END_RULEBLOCK
+
+
+END_FUNCTION_BLOCK
